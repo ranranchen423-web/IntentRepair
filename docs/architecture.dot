@@ -1,0 +1,22 @@
+digraph architecture {
+rankdir=TB; bgcolor="white"; graph [pad="0.3",nodesep="0.45",ranksep="0.52"];
+node [shape=box,style="rounded,filled",fillcolor="#eaf4ee",color="#36765e",fontname="Arial",fontsize=11,margin="0.18,0.14"];
+edge [color="#547a68",fontname="Arial",fontsize=9];
+user [label="User goal and message\n[I]"];
+ui [label="Web chat interface\n[I]"];
+server [label="Local HTTP / JSON API\n[I]"];
+engine [label="Keyword intent detector\n[I]"];
+decide [shape=diamond,label="Activity\nclear? [I]"];
+response [label="Illustrative response\n[S]"];
+warning [label="Assumption warning\n[I]"];
+refine [label="Refine options\n[I]"];
+merge [label="Validate + merge preferences\n[I]"];
+show [label="On-screen response\n[I]"];
+user -> ui -> server -> engine -> decide;
+decide -> response [label="yes"];
+decide -> warning [label="no"];
+warning -> response;
+response -> show -> refine;
+refine -> merge [label="user chooses"];
+merge -> response [label="updated constraints"];
+}
