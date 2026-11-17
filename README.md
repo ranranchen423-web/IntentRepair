@@ -27,18 +27,104 @@ The central interaction is: **ask a question → receive a response → select �
 - **DeepSeek-V4.1-Flash via Volcengine Ark**: live answer generation and context-sensitive clarification suggestions.
 - **Python `unittest`**: local automated tests for core behaviour and error handling.
 
-## Run locally
+## Run Locally
 
-1. Open the project folder in VS Code.
-2. Start the server:
+### Requirements
+
+- Python 3.10 or later
+- Internet access for live AI requests
+- A Volcengine Ark API key with access to the configured DeepSeek model
+- Visual Studio Code or another terminal environment
+
+### Step 1 — Clone the Repository
+
+Open PowerShell and run:
+
+```powershell
+git clone https://github.com/ranranchen423-web/IntentRepair.git
+cd IntentRepair
+```
+
+### Step 2 — Configure the AI Provider
+
+Create a `.env` file in the project root directory, alongside `app.py`.
+
+If `.env.example` is available, copy it using:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Otherwise, create the file manually:
+
+```powershell
+notepad .env
+```
+
+Add the following configuration:
+
+```env
+ARK_API_KEY=YOUR_OWN_ARK_API_KEY
+AI_MODEL=deepseek-v4-1-flash-261017
+AI_BASE_URL=https://ark.cn-beijing.volces.com/api/v3
+AI_MODE=live
+```
+
+Replace `YOUR_OWN_ARK_API_KEY` with your personal Ark API key.
+
+The model must be available to your Ark account. If the model identifier is not supported, use the authorised inference endpoint ID provided in the Ark console.
+
+**Security:** Keep `.env` private. Never commit API keys to GitHub or include them in screenshots, reports or shared files. The repository's `.gitignore` excludes `.env`.
+
+### Step 3 — Start the Application
+
+Run:
 
 ```powershell
 python app.py
 ```
 
-4. Visit **http://127.0.0.1:8000**. The `/api/health` endpoint reports whether live mode is configured; it does **not** prove the model successfully responded. Send a test message to confirm a live call. Stop the server with `Ctrl+C`.
+Open the following address in your browser:
 
-No third-party Python package installation is required by this version. Remote API usage may incur charges.
+http://127.0.0.1:8000
+
+The application should display `LIVE AI CONNECTED` when valid-looking credentials are loaded. This indicator confirms configuration only, not successful communication with the external model.
+
+### Step 4 — Verify the Live AI Connection
+
+Open:
+
+http://127.0.0.1:8000/api/health
+
+The response should include:
+
+```json
+{
+  "status": "ok",
+  "mode": "live",
+  "model": "configured"
+}
+```
+
+Next, send the following test message:
+
+`Help me learn Python.`
+
+Check that the AI generates a relevant response.
+
+Then click **Refine your request**. The system should generate context-specific clarification options. Select one and click **Update response** to verify the revised answer.
+
+If the provider returns an error, check the API key, account permissions, available model ID and request quota.
+
+### Demo Mode and Limitations
+
+Without a configured API key, the application uses a limited offline simulation. Dynamic AI-generated clarification requires a live model connection.
+
+The prototype is intended for local academic evaluation and does not require deployment to a public server.
+
+No third-party Python packages are required. API requests may incur charges.
+
+Stop the application by pressing `Ctrl+C` in the terminal.
 
 ## Test and inspect
 
